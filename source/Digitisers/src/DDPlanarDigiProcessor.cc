@@ -125,6 +125,11 @@ DDPlanarDigiProcessor::DDPlanarDigiProcessor() : Processor("DDPlanarDigiProcesso
                               _correctTimesForPropagation ,
                               bool(false) );
 
+  registerProcessorParameter( "Beta" ,
+                              "Particle beta (v/c) for time of flight correction, default: 1" ,
+                              _beta, 
+                              double(1.0) );
+
   registerProcessorParameter( "UseTimeWindow" , 
                               "Only accept hits with time (after smearing) within the specified time window (default: false)" ,
                               _useTimeWindow ,
@@ -367,7 +372,19 @@ void DDPlanarDigiProcessor::processEvent( LCEvent * evt ) {
      
       // Correcting for the propagation time
       if (_correctTimesForPropagation) {
-        double dt = oldPos.r() / ( TMath::C() / 1e6 );
+        // double beta = 1;
+
+        // MCParticle* particle = simTHit->getMCParticle();
+        // if (particle != nullptr) {
+        //   const double* mom = particle->getMomentum();
+        //   double energy = particle->getEnergy();
+
+        //   TLorentzVector tlv;
+        //   tlv.SetPxPyPz(mom[0], mom[1], mom[2], energy);
+        //   beta = tlv.Beta()
+        // }
+
+        double dt = oldPos.r() / ( _beta * TMath::C() / 1e6 );
         hitT -= dt;
         streamlog_out(DEBUG3) << "corrected hit at R: " << oldPos.r() << " mm by propagation time: " << dt << " ns to T: " << hitT << " ns" << std::endl;
       }

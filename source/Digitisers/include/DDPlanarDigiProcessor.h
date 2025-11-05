@@ -119,6 +119,8 @@ protected:
   FloatVec _timeWindow_max {};
 
   std::vector<TH1F*> _h {};
+
+  double _beta {};
   
 } ;
 
